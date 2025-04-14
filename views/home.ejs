@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            padding: 20px;
+        }
+        #chat-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        #messages {
+            list-style: none;
+            padding: 0;
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 10px;
+        }
+        #messages li {
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        .message {
+            background-color: #e1f5fe;
+            padding: 8px;
+            border-radius: 5px;
+            max-width: 80%;
+        }
+        #message-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <script src="/socket.io/socket.io.js">
+    </script>
+   
+    <div id="chat-container">
+        <h2>Simple Chat App</h2>
+        
+        <!-- Chatbox -->
+        <ul id="messages">
+            <!-- Sample messages; you would dynamically populate this server-side -->
+            <li class="message">User1: Hello!</li>
+            <li class="message">User2: Hi there!</li>
+        </ul>
+
+        <!-- Message Input and Send Button -->
+        <input id="message-input" placeholder="Type a message..."></input>
+        <button id="send-btn">Send</button>
+    </div>
+    <script>
+        var socket = io()
+        var inputmessage = document.getElementById('message-input')
+        var sendbutton = document.getElementById('send-btn')
+        var messagebox = document.getElementById('messages')
+        sendbutton.addEventListener('click',(e) => {
+            var mesagefromuser = inputmessage.value
+            socket.emit('usermessage',mesagefromuser)
+            // throwing this message from user that is the front-end to the server.
+        })// sending our message to the server which would then store it and forward it to dedicated or all users.
+        socket.on('message',(message) => {
+            // this would be listening for the messages coming from the server and then displaying it to the users on the front-end 
+            // components.
+            const newmessage = document.createElement('div')
+            newmessage.textContent = message
+            messagebox.appendChild(newmessage)
+            messagebox.scrollTop = messagebox.scrollHeight
+        })
+    </script>
+</body>
+</html>
